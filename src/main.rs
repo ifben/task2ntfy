@@ -85,7 +85,6 @@ fn check_tasks(earliest: u8, within: u8) -> String {
             for task in pending_tasks {
                 if let Some(_i) = task.due() {
                     //println!("Task due: {:?}", task.due().unwrap());
-                    
                     let due = task.due().unwrap().to_string();
                     let now: DateTime<Local> = Local::now();
 
@@ -99,6 +98,7 @@ fn check_tasks(earliest: u8, within: u8) -> String {
 
                     let difference = parsed.unwrap() - naive_parsed.unwrap();
                     if difference.num_hours() < within as i64 && difference.num_hours() > 0 && time_of_day > time.unwrap() {
+                        println!("{:?}", task.uuid());
                         message = task.description().to_string();
                     } else {
                         message = "Don't send notification!".to_string();
