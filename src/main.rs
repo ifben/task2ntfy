@@ -1,7 +1,7 @@
 use task_hookrs::task::Task;
 use chrono::prelude::*;
 use std::time::Duration;
-use tokio::{task, time};
+//use tokio::{task, time};
 use clap::Parser;
 //use std::future::Future;
 
@@ -41,36 +41,14 @@ struct Args {
 }
 
 
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
+//#[tokio::main]
+fn main() {
 
     let args = Args::parse();
 
     println!("{}", args.subscription);
 
-    let client = reqwest::Client::new();
-    let res = client.post("https://ntfy.sh/Bentesttopic")
-        .body("the exact body that is sent")
-        .send()
-        .await?;
-
-    println!("{:#?}", res);
-    
    
-
-    let forever = task::spawn(async {
-        let mut interval = time::interval(Duration::from_secs(CHECK_EVERY));
-
-        loop {
-            interval.tick().await;
-            let task_name = check_tasks();
-            println!("{:?}", task_name);
-        }
-    });
-
-    forever.await.unwrap();
-
-    Ok(())
 }
 
 fn check_tasks() -> String {
