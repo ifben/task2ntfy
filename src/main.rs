@@ -1,15 +1,15 @@
 use task_hookrs::task::Task;
 use chrono::prelude::*;
-use std::time::Duration;
-//use tokio::{task, time};
+use std::thread::sleep;
+use std::time::{Duration, Instant};
 use clap::Parser;
 //use std::future::Future;
 
 pub type Tasks = Vec<Task>;
 
 
-const HOURS: i64 = 24;
-const CHECK_EVERY: u64 = 10;
+//const HOURS: i64 = 24;
+//const CHECK_EVERY: u64 = 10;
 //const EARLY: i64 = 9;
 
 #[derive(Parser, Debug)]
@@ -42,16 +42,28 @@ struct Args {
 
 
 //#[tokio::main]
-fn main() {
+fn main() -> Result<(), ureq::Error> {
 
     let args = Args::parse();
 
-    println!("{}", args.subscription);
+    let interval = Duration::from_secs(args.check_every as u64);
+    let mut next_time = Instant::now() + interval;
 
+    loop {  
+
+        let _resp = ureq::post("https://ntfy.sh/Bentesttopic")      
+            .send_string(&check_tasks(args.earliest, args.within))?;
+            
+        sleep(next_time - Instant::now());
+        next_time += interval;
+        println!("looping");
+    }    
+
+    //Ok(())
    
 }
 
-fn check_tasks() -> String {
+fn check_tasks(earliest: u8, within: u8) -> String {
     // this will probably need to return a vec of notifications to send rather than just a string
     // and we'll also need to take some input to replace HOURS const
     //let early = earliest as i64;
@@ -82,8 +94,11 @@ fn check_tasks() -> String {
                     let naive = now.naive_local().to_string();
                     let naive_parsed = NaiveDateTime::parse_from_str(&naive, "%Y-%m-%d%H:%M:%S%.f");
 
+                    let time = NaiveTime::from_hms_opt(earliest.into(), 0, 0);
+                    let time_of_day = Local::now().time();
+
                     let difference = parsed.unwrap() - naive_parsed.unwrap();
-                    if difference.num_hours() < HOURS && difference.num_hours() > 0 {
+                    if difference.num_hours() < within as i64 && difference.num_hours() > 0 && time_of_day > time.unwrap() {
                         message = task.description().to_string();
                     } else {
                         message = "Don't send notification!".to_string();
