@@ -16,7 +16,7 @@ Since this is just a tiny CLI program made for basically my own needs, there are
 task2ntfy -s mytaskwarriornotifications
 ```
 
-You can also configure how early you want to be notified, which defaults to 9:00AM local time. If you want to be notified later, you can set that time (in hours), with `--earliest` or `-e`:
+You can also configure how early you want to be notified, which defaults to 9:00AM local time. If you want to be notified at a different time, you can set that time (in hours), with `--earliest` or `-e`:
 
 ```bash
 task2nty -s mytaskwarriornotifications -e 12
