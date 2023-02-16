@@ -40,7 +40,6 @@ struct Args {
 fn main() -> Result<(), ureq::Error> {
 
     let args = Args::parse();
-    
     let interval = Duration::from_secs(args.check_every as u64); // how often the loop will run
     let mut next_time = Instant::now() + interval; // set the time for the next loop to run
     let mut url = "https://ntfy.sh/".to_string(); // use the ntfy.sh instance as default
@@ -108,7 +107,9 @@ fn main() -> Result<(), ureq::Error> {
         }
         sleep(next_time - Instant::now());
         next_time += interval;
-        println!("Looping...");
 
+        if args.once == true {
+            std::process::exit(0);
+        }
     }       
 }
