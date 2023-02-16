@@ -1,8 +1,8 @@
 # task2ntfy
 
-task2ntfy exists for an extremely small amount of people, who happen to use [taskwarrior](https://taskwarrior.org/) for task management, but who might appreciate notifications of upcoming pending tasks, but who also think [ntfy.sh](https://ntfy.sh/) is cool. If you fit that description, you might find this extremely specific application useful.
+`task2ntfy` exists for an extremely small amount of people, who happen to use [taskwarrior](https://taskwarrior.org/) for task management, who might appreciate notifications of upcoming pending tasks, and who also think [ntfy.sh](https://ntfy.sh/) is cool. If you fit that description, you might find this extremely specific application useful.
 
-To use task2ntfy, you must first either create a subscription on ntfy.sh to send notifications to or have a subscription setup on your own locally hosted version of ntfy. If you are self-hosting, you'll need to set a path with `--base-url` or `-b`, which defaults to `https://ntfy.sh/` if unset.
+To use `task2ntfy`, you must first either create a subscription on [ntfy.sh](https://ntfy.sh/) to send notifications to or have a subscription setup on your own locally hosted version of `ntfy`. If you are self-hosting, you'll need to set a path with `--base-url` or `-b`, which defaults to `https://ntfy.sh/` if unset.
 
 ## Installation
 
@@ -22,19 +22,19 @@ You can also configure how early you want to be notified, which defaults to 9:00
 task2nty -s mytaskwarriornotifications -e 12
 ```
 
-task2ntfy will run continuously, checking your pending taskwarrior tasks for one that is within its notification threshold, which defaults to 24 hours. That threshold can be configured (in hours) with `--within` or `-w`:
+`task2ntfy` will run continuously, checking your pending `taskwarrior` tasks for one that is within its notification threshold, which defaults to 24 hours. That threshold can be configured (in hours) with `--within` or `-w`:
 
 ```bash
 task2nty -s mytaskwarriornotifications -e 12 -w 12
 ```
 
-You can also configure how frequently to recheck taskwarrior tasks, which defaults to every 60 seconds. This time can be set (in seconds), with `--check-every` or `-c`:
+You can also configure how frequently to recheck `taskwarrior` tasks, which defaults to every 60 seconds. This time can be set (in seconds), with `--check-every` or `-c`:
 
 ```bash
 task2nty -s mytaskwarriornotifications -e 12 -w 12 -c 30
 ```
 
-Lastly, task2ntfy defaults to looping infinitely, but it can be set to run only once (in case you'd prefer to run it as a cron job or something similar). Add the `--once` or `-o` option for task2ntfy to stop after its first loop:
+Lastly, `task2ntfy` defaults to looping infinitely, but it can be set to run only once (in case you'd prefer to run it as a `cron` job or something similar). Add the `--once` or `-o` option for `task2ntfy` to stop after its first loop:
 
 ```bash
 task2nty -s mytaskwarriornotifications -e 12 -w 12 -c 30 -o
