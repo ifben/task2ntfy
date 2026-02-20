@@ -68,17 +68,19 @@ fn main() -> Result<(), ureq::Error> {
                 let pending_tasks: Tasks = serde_json::from_str(&data).unwrap(); // use serde to parse JSON
                 for task in pending_tasks {
                    
-                    if let Some(_i) = task.due() { // need to use an if let here since due() returns an option (tasks don't require due dates), even though ours only ever will here
+                    if let Some(due_date) = task.due() { // need to use an if let here since due() returns an option (tasks don't require due dates), even though ours only ever will here
 
-                        let tw_due = task.due().unwrap().to_string(); // unwrap taskwarrior's due date
-                        let tw_parsed = NaiveDateTime::parse_from_str(&tw_due, "%Y-%m-%d%H:%M:%S").unwrap(); // parse taskwarrior due date to something comparable
-                        
+                        // due_date is a NaiveDateTime in UTC from task-hookrs, convert to local time for comparison
+                        let tw_utc = DateTime::<Utc>::from_naive_utc_and_offset(**due_date, Utc);
+                        let tw_local = tw_utc.with_timezone(&Local);
+
                         let now: DateTime<Local> = Local::now(); // get current time
                         let notification_time = NaiveTime::from_hms_opt(args.earliest.into(), 0, 0).unwrap(); // parse the earliest time we want to be notified
-    
-                        let difference = tw_parsed - now.naive_local(); // calculate if we are within notification time 
 
-                        if difference.num_hours() < args.within as i64 && difference.num_hours() > 0 && now.time() > notification_time { // if we're within the notification range and it's not too early, proceed
+                        let difference = tw_local.signed_duration_since(now); // calculate if we are within notification time
+                        let diff_minutes = difference.num_minutes();
+
+                        if diff_minutes < (args.within as i64 * 60) && diff_minutes > 0 && now.time() > notification_time { // if we're within the notification range and it's not too early, proceed
                             if uuids.len() > 0 { // if we've already added a UUID to our vector, we need to check for matches
                                 'last: for _i in 0..uuids.len() {
                                         for j in 0..uuids.len() { // this nested for loop sucks
